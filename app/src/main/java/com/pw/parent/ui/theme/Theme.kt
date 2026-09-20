@@ -1,4 +1,4 @@
-package com.gothwad.grixchat.ui.theme
+package com.pw.parent.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -16,33 +16,33 @@ import androidx.core.view.WindowCompat
 import android.app.Activity
 
 private val DarkColorScheme = darkColorScheme(
-    primary = GrixPrimary,
-    secondary = GrixSecondary,
-    tertiary = GrixAccent,
-    background = GrixDarkBackground,
-    surface = GrixSurfaceDark,
-    surfaceVariant = GrixSurfaceCard,
-    onPrimary = GrixDarkBackground,
-    onSecondary = GrixDarkBackground,
-    onBackground = GrixLightBackground,
-    onSurface = GrixLightBackground
+    primary = ParentAppPrimary,
+    secondary = ParentAppSecondary,
+    tertiary = ParentAppAccent,
+    background = ParentAppDarkBackground,
+    surface = ParentAppSurfaceDark,
+    surfaceVariant = ParentAppSurfaceCard,
+    onPrimary = ParentAppDarkBackground,
+    onSecondary = ParentAppDarkBackground,
+    onBackground = ParentAppLightBackground,
+    onSurface = ParentAppLightBackground
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = GrixPrimaryLight,
-    secondary = GrixSecondaryLight,
-    tertiary = GrixAccent,
-    background = GrixLightBackground,
-    surface = GrixSurfaceLight,
-    surfaceVariant = GrixSurfaceCardLight,
-    onPrimary = GrixSurfaceLight,
-    onSecondary = GrixSurfaceLight,
-    onBackground = GrixDarkBackground,
-    onSurface = GrixDarkBackground
+    primary = ParentAppPrimaryLight,
+    secondary = ParentAppSecondaryLight,
+    tertiary = ParentAppAccent,
+    background = ParentAppLightBackground,
+    surface = ParentAppSurfaceLight,
+    surfaceVariant = ParentAppSurfaceCardLight,
+    onPrimary = ParentAppSurfaceLight,
+    onSecondary = ParentAppSurfaceLight,
+    onBackground = ParentAppDarkBackground,
+    onSurface = ParentAppDarkBackground
 )
 
 @Composable
-fun MyApplicationTheme(
+fun ParentAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Allow dynamic colors on API 31+
     dynamicColor: Boolean = false,

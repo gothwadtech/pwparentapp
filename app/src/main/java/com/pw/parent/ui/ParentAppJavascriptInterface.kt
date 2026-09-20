@@ -1,17 +1,17 @@
-package com.gothwad.grixchat.ui
+package com.pw.parent.ui
 
 import android.content.Context
 import android.util.Log
 import android.webkit.JavascriptInterface
 import android.widget.Toast
-import com.gothwad.grixchat.BuildConfig
+import com.pw.parent.BuildConfig
 import java.util.UUID
 
-class GrixJavascriptInterface(
+class ParentAppJavascriptInterface(
     private val context: Context,
-    private val viewModel: GrixViewModel
+    private val viewModel: ParentAppViewModel
 ) {
-    private val tag = "GrixJavascriptInterface"
+    private val tag = "ParentAppJavascriptInterface"
     // Fallback token handed to the page when Firebase is not configured. Derived from
     // app.name so a rebrand does not leave the old product name in the payload.
     private val appToken =

@@ -1,4 +1,4 @@
-package com.gothwad.grixchat
+package com.pw.parent
 
 import org.junit.Assert.*
 import org.junit.Test

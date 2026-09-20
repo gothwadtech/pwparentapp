@@ -1,4 +1,4 @@
-package com.gothwad.grixchat.ui
+package com.pw.parent.ui
 
 import android.app.Application
 import android.content.Context
@@ -10,10 +10,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.gothwad.grixchat.data.GrixRepository
-import com.gothwad.grixchat.data.NotificationItem
-import com.gothwad.grixchat.data.OfflineDraft
-import com.gothwad.grixchat.utils.GrixNotificationHelper
+import com.pw.parent.data.ParentAppRepository
+import com.pw.parent.data.NotificationItem
+import com.pw.parent.data.OfflineDraft
+import com.pw.parent.utils.ParentAppNotificationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,16 +21,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class GrixViewModel(
+class ParentAppViewModel(
     application: Application,
-    private val repository: GrixRepository
+    private val repository: ParentAppRepository
 ) : AndroidViewModel(application) {
 
     private val connectivityManager =
         application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     // Target web resource loaded dynamically from environment configuration
-    val targetUrl = com.gothwad.grixchat.BuildConfig.TARGET_URL
+    val targetUrl = com.pw.parent.BuildConfig.TARGET_URL
 
     // Only this host (plus its subdomains) may use camera, microphone and geolocation.
     val trustedHost: String = runCatching {
@@ -176,7 +176,7 @@ class GrixViewModel(
     fun triggerLocalNotification(title: String, message: String) {
         viewModelScope.launch {
             repository.saveNotification(title, message)
-            GrixNotificationHelper.showNotification(getApplication(), title, message)
+            ParentAppNotificationHelper.showNotification(getApplication(), title, message)
         }
     }
 
@@ -194,14 +194,14 @@ class GrixViewModel(
 }
 
 // Custom ViewModel Factory
-class GrixViewModelFactory(
+class ParentAppViewModelFactory(
     private val application: Application,
-    private val repository: GrixRepository
+    private val repository: ParentAppRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(GrixViewModel::class.java)) {
-            return GrixViewModel(application, repository) as T
+        if (modelClass.isAssignableFrom(ParentAppViewModel::class.java)) {
+            return ParentAppViewModel(application, repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

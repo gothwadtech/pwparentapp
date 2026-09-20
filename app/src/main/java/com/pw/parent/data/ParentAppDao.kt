@@ -1,4 +1,4 @@
-package com.gothwad.grixchat.data
+package com.pw.parent.data
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +21,7 @@ data class NotificationItem(
 )
 
 @Dao
-interface GrixDao {
+interface ParentAppDao {
     // Operations for Offline Drafts
     @Query("SELECT * FROM offline_drafts ORDER BY timestamp DESC")
     fun getAllOfflineDrafts(): Flow<List<OfflineDraft>>

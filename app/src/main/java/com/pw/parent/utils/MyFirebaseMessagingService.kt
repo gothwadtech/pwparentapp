@@ -1,9 +1,9 @@
-package com.gothwad.grixchat.utils
+package com.pw.parent.utils
 
 import android.util.Log
-import com.gothwad.grixchat.BuildConfig
-import com.gothwad.grixchat.data.GrixDatabase
-import com.gothwad.grixchat.data.GrixRepository
+import com.pw.parent.BuildConfig
+import com.pw.parent.data.ParentAppDatabase
+import com.pw.parent.data.ParentAppRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
-    private val tag = "GrixFCMService"
+    private val tag = "ParentAppFCMService"
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
@@ -60,14 +60,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         saveNotificationToLocalDb(finalTitle, finalBody)
 
         // 3. Show native system notification banner
-        GrixNotificationHelper.showNotification(applicationContext, finalTitle, finalBody)
+        ParentAppNotificationHelper.showNotification(applicationContext, finalTitle, finalBody)
     }
 
     private fun saveNotificationToLocalDb(title: String, message: String) {
         serviceScope.launch {
             try {
-                val db = GrixDatabase.getDatabase(applicationContext)
-                val repository = GrixRepository(db.grixDao())
+                val db = ParentAppDatabase.getDatabase(applicationContext)
+                val repository = ParentAppRepository(db.parentAppDao())
                 repository.saveNotification(title, message)
             } catch (e: Exception) {
                 Log.e(tag, "Failed to persist notification in Room DB", e)

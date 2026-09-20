@@ -1,4 +1,4 @@
-package com.gothwad.grixchat
+package com.pw.parent
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider

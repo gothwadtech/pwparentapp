@@ -1,4 +1,4 @@
-# WebView App Builder🚀
+# Parent App 📱
 
 <div align="center">
 
@@ -8,10 +8,11 @@
 ![Architecture](https://img.shields.io/badge/Architecture-MVVM%20%2B%20Clean-FF6F00?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)
 
-**A reusable, offline-first Android WebView container built with Jetpack Compose, Material 3,
-Room Database, and Firebase Cloud Messaging — rebrand it from one config block.**
+**Parent App** — an offline-first Android WebView app (package **`com.pw.parent`**) built with
+Jetpack Compose, Material 3, Room Database and Firebase Cloud Messaging on top of a reusable
+WebView container template.
 
-[Template Usage](#-using-this-as-a-template) • [Features](#-key-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [CI/CD & Releases](#-cicd--signing-secrets)
+[Configuration](#-configuration) • [Features](#-key-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [CI/CD & Releases](#-cicd--signing-secrets)
 
 </div>
 
@@ -19,15 +20,26 @@ Room Database, and Firebase Cloud Messaging — rebrand it from one config block
 
 ## 📱 Overview
 
-**A template for shipping a web app as a native Android app.** Point it at a URL and you get a
+**Parent App ships the Parent web app as a native Android app.** It wraps the web app in a
 production-shaped container: native Compose chrome around a hardened WebView, offline caching
 and a retryable offline screen, scoped camera/mic/geolocation, a Room database for local data,
 and FCM push wired to a JavaScript bridge.
 
-The repository currently carries a working sample configuration — **GrixChat**
-(`grixchat.gothwad.workers.dev`) — so the template stays verifiable against a live deployment.
-That is *sample data*, not the product: see **[Using this as a template](#-using-this-as-a-template)**
-to rebrand the app from `gradle.properties` + `.env`.
+### App identity
+
+| | |
+| :--- | :--- |
+| App name (launcher label) | **Parent App** |
+| Application ID / package | **`com.pw.parent`** |
+| Kotlin namespace & source root | `com.pw.parent` → `app/src/main/java/com/pw/parent/` |
+| JavaScript bridge | `window.ParentApp.*` |
+| Notification channel | `parent_app_notifications` |
+| Room database file | `parent_app_database` |
+
+The identity above comes from the `app.*` block in `gradle.properties`; the web URL the app loads
+comes from `.env` (`TARGET_URL`). **`.env.example` currently contains a placeholder URL
+(`https://parent-app.example.com`) — set the real Parent App deployment URL before building.**
+See **[Configuration](#-configuration)** for details.
 
 ---
 
@@ -61,7 +73,7 @@ to rebrand the app from `gradle.properties` + `.env`.
 ## 📂 Project Structure
 
 ```text
-webview/                        # template root
+pwparentapp/                    # Parent App repository root
 ├── .github/
 │   └── workflows/
 │       ├── build.yml          # Build & Sign APK / AAB on push to main
@@ -71,10 +83,11 @@ webview/                        # template root
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── assets/        # App assets & graphics
-│   │   │   ├── java/com/gothwad/grixchat/
-│   │   │   │   ├── data/      # Room Database, DAO, Repository
-│   │   │   │   ├── ui/        # Compose Screens, ViewModels, Theme
-│   │   │   │   └── utils/     # FCM Service, Notification Helpers
+│   │   │   ├── java/com/pw/parent/
+│   │   │   │   ├── MainActivity.kt          # Compose host + ParentAppScreen (WebView)
+│   │   │   │   ├── data/      # ParentAppDatabase, ParentAppDao, ParentAppRepository (Room)
+│   │   │   │   ├── ui/        # ParentAppViewModel, ParentAppJavascriptInterface, theme/
+│   │   │   │   └── utils/     # MyFirebaseMessagingService, ParentAppNotificationHelper
 │   │   │   ├── res/           # Layouts, mipmaps, drawables, strings
 │   │   │   └── AndroidManifest.xml
 │   │   └── test/              # Local JVM and Robolectric unit tests
@@ -83,8 +96,8 @@ webview/                        # template root
 ├── gradle/
 │   ├── libs.versions.toml     # Version catalog
 │   └── wrapper/               # Gradle wrapper executable & properties
-├── gradle.properties          # ⭐ Template configuration (app.name, app.id, JS bridge, ...)
-├── .env.example               # ⭐ TARGET_URL for the web app (copy to .env)
+├── gradle.properties          # ⭐ App configuration (app.name=Parent App, app.id=com.pw.parent, ...)
+├── .env.example               # ⭐ TARGET_URL for the Parent web app (copy to .env)
 ├── build.gradle.kts           # Root build configuration
 ├── settings.gradle.kts        # Project settings & plugin resolution
 └── README.md                  # Documentation
@@ -104,8 +117,8 @@ webview/                        # template root
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/GrixChat.git
-   cd GrixChat
+   git clone https://github.com/gothwadtech/pwparentapp.git
+   cd pwparentapp
    ```
 
 2. **Setup environment variables:**
@@ -125,14 +138,16 @@ webview/                        # template root
    ```bash
    ./gradlew testDebugUnitTest
    ```
+   The Roborazzi screenshot test records its golden image with
+   `./gradlew recordRoborazziDebug` (written to `app/src/test/screenshots/`).
 
 ---
 
-## 🧩 Using this as a template
+## 🧩 Configuration
 
-This repository is a **reusable WebView container**, not a single app. The current values
-(`GrixChat`, `grixchat.gothwad.workers.dev`) are a working sample: they keep the template
-verifiable against a real deployment. Nothing else in the project hardcodes the branding.
+Parent App is built on a **reusable WebView container**, so its branding lives in one config
+block instead of being scattered through the code. Nothing else in the project hardcodes the
+branding.
 
 ### 1. The config block (`gradle.properties`)
 
@@ -155,19 +170,20 @@ cp .env.example .env     # then set TARGET_URL to your web app
 any other origin are denied, and it drives the WebView's initial load. Change it and the
 session/theme/caching behaviour follows automatically.
 
-### 3. Rebrand checklist for a new app
+### 3. Checklist before the first release
 
-1. Edit the `app.*` block in `gradle.properties`.
-2. Set `TARGET_URL` in `.env`.
-3. Replace the launcher icons in `app/src/main/res/mipmap-*` and `ic_splash_logo.xml`.
-4. *(Optional)* Rename the Kotlin package/classes (`com.gothwad.grixchat.*`, `Grix*` classes,
-   the `grixchat_database` Room file). These are **not** part of the config block — they are
-   internal identifiers, so they only matter if you want the source tree to look neutral.
-5. Add `google-services.json` + the `google-services` plugin if the app needs push (see below).
+1. Review the `app.*` block in `gradle.properties` (already set to **Parent App** / `com.pw.parent`).
+2. Set `TARGET_URL` in `.env` to the real Parent App web deployment (the checked-in
+   `.env.example` value is a placeholder).
+3. Replace the launcher icons in `app/src/main/res/mipmap-*` and the splash logo in
+   `app/src/main/res/drawable/ic_splash_logo.xml` with the final Parent App artwork.
+4. Add `google-services.json` + the `google-services` plugin if the app needs push (see below).
 
-> **`app.id` vs package name:** changing `applicationId` is enough for a new store listing —
-> the Kotlin `namespace` stays `com.gothwad.grixchat` and the code keeps working. Rename the
-> source package only if you care about the source layout.
+> **Source layout:** the Kotlin `namespace`, the `applicationId` and the source tree all use
+> `com.pw.parent` (`app/src/main/java/com/pw/parent/`). Internal classes carry the `ParentApp`
+> prefix (`ParentAppDatabase`, `ParentAppDao`, `ParentAppRepository`, `ParentAppViewModel`,
+> `ParentAppJavascriptInterface`, `ParentAppNotificationHelper`), the Compose theme is
+> `ParentAppTheme` / `Theme.ParentApp`, and the Room file is `parent_app_database`.
 
 ### 4. What the template already handles
 
@@ -177,7 +193,7 @@ session/theme/caching behaviour follows automatically.
   the page needs them; no permission spam on first launch.
 - HTML ↔ native theme sync (MutationObserver + luma fallback), dark/light, edge-to-edge insets.
 - Room database for offline drafts + a notification log.
-- FCM service + notification channel + `GrixApp`-style JS bridge.
+- FCM service + notification channel + `ParentApp`-style JS bridge.
 
 ---
 
@@ -197,7 +213,7 @@ Both of these are required:
 
 Without them, `FirebaseApp.getApps()` is empty, the app logs
 `Firebase is not configured ... Push notifications are DISABLED.`, and
-`window.GrixApp.getPushToken()` returns a locally generated placeholder token.
+`window.ParentApp.getPushToken()` returns a locally generated placeholder token.
 (Previously the app silently initialised Firebase with a fake API key, so token
 retrieval failed forever while every piece of the notification stack *looked* connected.)
 
